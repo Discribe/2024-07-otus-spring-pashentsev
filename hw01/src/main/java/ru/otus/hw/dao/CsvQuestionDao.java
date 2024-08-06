@@ -22,7 +22,7 @@ public class CsvQuestionDao implements QuestionDao {
     public List<Question> findAll() {
 
         List<QuestionDto> beans;
-        beans = new CsvToBeanBuilder(readCvsFile(fileNameProvider.getTestFileName()))
+        beans = new CsvToBeanBuilder<QuestionDto>(readCvsFile(fileNameProvider.getTestFileName()))
                 .withType(QuestionDto.class).withSeparator(';')
                 .withSkipLines(1).withOrderedResults(false).build().parse();
 
