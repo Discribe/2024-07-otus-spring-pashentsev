@@ -7,9 +7,10 @@ import ru.otus.hw.dao.QuestionDao;
 
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
-
     private final IOService ioService;
+
     private final TestFileNameProvider fileNameProvider;
+
     @Override
     public void executeTest() {
         ioService.printLine("");
