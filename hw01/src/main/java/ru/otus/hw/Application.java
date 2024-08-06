@@ -10,9 +10,6 @@ public class Application {
         //Прописать бины в spring-context.xml и создать контекст на его основе
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-context.xml");
         var testRunnerService = context.getBean(TestRunnerService.class);
-//        var fileNameProvider = context.getBean(TestFileNameProvider.class);
-//        System.out.println("fileNameProvider  = "+fileNameProvider.getTestFileName());
-
         testRunnerService.run();
 
     }

@@ -20,7 +20,7 @@ public class TestServiceImpl implements TestService {
         questionDao.findAll().forEach(
                 question -> {
                     System.out.println(question.text());
-                    question.answers().forEach(System.out::println);
+                    question.answers().forEach(answer -> System.out.println(answer.text()));
                     System.out.println();
                 }
         );
