@@ -6,12 +6,11 @@ import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
-
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -21,32 +20,24 @@ public class CsvQuestionDao implements QuestionDao {
     @Override
     public List<Question> findAll() {
 
-        List<QuestionDto> beans;
-        beans = new CsvToBeanBuilder<QuestionDto>(readCvsFile(fileNameProvider.getTestFileName()))
-                .withType(QuestionDto.class).withSeparator(';')
-                .withSkipLines(1).withOrderedResults(false).build().parse();
+        List<QuestionDto> questions;
+        try (var inputStream = Objects.requireNonNull(getClass().getClassLoader()
+                .getResourceAsStream(fileNameProvider.getTestFileName()))) {
 
-        return beans.stream().map(QuestionDto::toDomainObject).collect(Collectors.toList());
+            var readerCsv = new BufferedReader(new InputStreamReader(inputStream));
 
-    }
+            questions = new CsvToBeanBuilder<QuestionDto>(readerCsv)
+                    .withType(QuestionDto.class)
+                    .withSeparator(';')
+                    .withSkipLines(1)
+                    .withOrderedResults(false)
+                    .build()
+                    .parse();
 
-    private Reader readCvsFile(String fileName) throws QuestionReadException {
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            InputStream inputStream = classLoader.getResourceAsStream(fileName);
+            return questions.stream().map(QuestionDto::toDomainObject).collect(Collectors.toList());
 
-            if (inputStream == null) {
-                throw new QuestionReadException("file not found! " + fileName);
-            } else {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                Reader reader = new BufferedReader(inputStreamReader);
-                return reader;
-            }
-
-        } catch (Exception e) {
+        } catch (NullPointerException | IOException e) {
             throw new QuestionReadException(e.getMessage(), e);
         }
     }
-
-
 }
