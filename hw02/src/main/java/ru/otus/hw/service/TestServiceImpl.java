@@ -15,8 +15,6 @@ public class TestServiceImpl implements TestService {
 
     private final IOService ioService;
 
-    private final TestFileNameProvider fileNameProvider;
-
     private final QuestionDao questionDao;
 
     @Override
