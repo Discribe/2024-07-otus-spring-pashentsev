@@ -1,14 +1,15 @@
 package ru.otus.hw.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.otus.hw.config.TestFileNameProvider;
-import ru.otus.hw.dao.CsvQuestionDao;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Student;
 import ru.otus.hw.domain.TestResult;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
@@ -24,28 +25,19 @@ public class TestServiceImpl implements TestService {
         ioService.printFormattedLine("Please answer the questions below%n");
         var questions = questionDao.findAll();
         var testResult = new TestResult(student);
-
         for (var question: questions) {
+            var countAnswer = new AtomicInteger();
             var isAnswerValid = false; // Задать вопрос, получить ответ
+            ioService.printFormattedLine("%s", question.text());
+            question.answers().forEach(answer -> ioService.printFormattedLine("%s. %s",
+                    countAnswer.getAndIncrement(), answer.text()));
+
+            var indexAnswer = ioService.readIntForRange(0, question.answers().size() - 1,
+                    "Некорректно указан номер ответа");
+
+            isAnswerValid = question.answers().get(indexAnswer).isCorrect();
             testResult.applyAnswer(question, isAnswerValid);
         }
         return testResult;
-    }
-
-
-    @Override
-    public void executeTest() {
-        ioService.printLine("");
-        ioService.printFormattedLine("Please answer the questions below%n");
-        // Получить вопросы из дао и вывести их с вариантами ответов
-        QuestionDao questionDao = new CsvQuestionDao(fileNameProvider);
-        var indexQuestion = new AtomicInteger();
-        questionDao.findAll().forEach(
-                question -> {
-                    System.out.println(String.format("%s. %s", indexQuestion.incrementAndGet(), question.text()));
-                    question.answers().forEach(answer -> System.out.println(String.format("   %s", answer.text())));
-                    System.out.println();
-                }
-        );
     }
 }
