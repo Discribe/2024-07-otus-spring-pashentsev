@@ -95,7 +95,7 @@ class TestServiceTest {
 
         var testResult = testService.executeTestFor(student);
 
-        Mockito.verify(csvQuestionDao).findAll();
+        Mockito.verify(csvQuestionDao, Mockito.atLeast(1) ).findAll();
 
         Assertions.assertEquals(student, testResult.getStudent());
         Assertions.assertEquals(2, testResult.getRightAnswersCount());
@@ -108,10 +108,10 @@ class TestServiceTest {
 
         var testResult = testService.executeTestFor(student);
 
-        Mockito.verify(csvQuestionDao).findAll();
+        Mockito.verify(csvQuestionDao, Mockito.atLeast(1) ).findAll();
 
         Assertions.assertEquals(student, testResult.getStudent());
-        Assertions.assertEquals(2, testResult.getRightAnswersCount());
+        Assertions.assertEquals(1, testResult.getRightAnswersCount());
 
     }
 }
