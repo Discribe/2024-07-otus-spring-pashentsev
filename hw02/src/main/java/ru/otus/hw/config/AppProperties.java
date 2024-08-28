@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Data
-@Configuration
 public class AppProperties implements TestConfig, TestFileNameProvider {
 
     // внедрить свойство из application.properties
