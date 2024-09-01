@@ -8,11 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import ru.otus.hw.Application;
 import ru.otus.hw.config.AppProperties;
 import ru.otus.hw.config.TestConfig;
 import ru.otus.hw.config.TestFileNameProvider;
@@ -30,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {TestServiceConfiguration.class,
-        AppProperties.class,
+        AppProperties.class, Application.class,
         TestServiceImpl.class})
 class TestServiceTest {
 
