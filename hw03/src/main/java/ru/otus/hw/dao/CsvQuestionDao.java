@@ -10,6 +10,7 @@ import ru.otus.hw.exceptions.QuestionReadException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class CsvQuestionDao implements QuestionDao {
         try (var inputStream = Objects.requireNonNull(getClass().getClassLoader()
                 .getResourceAsStream(fileNameProvider.getTestFileName()))) {
 
-            var readerCsv = new BufferedReader(new InputStreamReader(inputStream));
+            var readerCsv = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
             questions = new CsvToBeanBuilder<QuestionDto>(readerCsv)
                     .withType(QuestionDto.class)

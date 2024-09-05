@@ -3,40 +3,33 @@ package ru.otus.hw.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.otus.hw.Application;
-import ru.otus.hw.config.AppProperties;
 import ru.otus.hw.config.TestConfig;
 import ru.otus.hw.config.TestFileNameProvider;
-import ru.otus.hw.config.TestServiceConfiguration;
-import ru.otus.hw.dao.CsvQuestionDao;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.domain.Student;
 
-import javax.swing.*;
 import java.util.List;
+import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 
-@ExtendWith({SpringExtension.class})
-@ContextConfiguration(classes = {TestServiceConfiguration.class,
-        AppProperties.class, Application.class,
-        TestServiceImpl.class})
+@SpringBootTest
+@TestPropertySource( properties = {
+        "test.locale=en-US",
+        "test.rightAnswersCountToPass=1"
+})
 class TestServiceTest {
 
-    @Autowired
+    @MockBean
     private QuestionDao csvQuestionDao;
 
     @Autowired
@@ -48,7 +41,8 @@ class TestServiceTest {
     @Autowired
     private TestService testService;
 
-    @Autowired
+    @MockBean
+    @Qualifier("streamsIOService")
     private IOService streamsIOService;
 
     private List questionList;
@@ -92,8 +86,7 @@ class TestServiceTest {
 
     @Test
     void executeTestForTwoCorrectAnswers() {
-        Mockito.when(streamsIOService.readIntForRange(0, questionList.size() - 1,
-                "Некорректно указан номер ответа")).thenReturn(0);
+        Mockito.when(streamsIOService.readIntForRange(anyInt(), anyInt(), anyString())).thenReturn(0);
 
         var testResult = testService.executeTestFor(student);
 
@@ -105,8 +98,7 @@ class TestServiceTest {
 
     @Test
     void executeTestForOneCorrectAnswers() {
-        Mockito.when(streamsIOService.readIntForRange(0, questionList.size() - 1,
-                "Некорректно указан номер ответа")).thenReturn(1);
+        Mockito.when(streamsIOService.readIntForRange(anyInt(), anyInt(), anyString())).thenReturn(1);
 
         var testResult = testService.executeTestFor(student);
 
@@ -114,6 +106,5 @@ class TestServiceTest {
 
         Assertions.assertEquals(student, testResult.getStudent());
         Assertions.assertEquals(1, testResult.getRightAnswersCount());
-
     }
 }

@@ -12,25 +12,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
-    private final IOService ioService;
+    private final LocalizedIOService localizedIOService;
 
     private final QuestionDao questionDao;
 
     @Override
     public TestResult executeTestFor(Student student) {
-        ioService.printLine("");
-        ioService.printFormattedLine("Please answer the questions below%n");
+        localizedIOService.printLine("");
+        localizedIOService.printLineLocalized("TestService.answer.the.questions");
         var questions = questionDao.findAll();
         var testResult = new TestResult(student);
         for (var question: questions) {
             var countAnswer = new AtomicInteger();
             var isAnswerValid = false; // Задать вопрос, получить ответ
-            ioService.printFormattedLine("%s", question.text());
-            question.answers().forEach(answer -> ioService.printFormattedLine("%s. %s",
+            localizedIOService.printFormattedLine("%s", question.text());
+            question.answers().forEach(answer -> localizedIOService.printFormattedLine("%s. %s",
                     countAnswer.getAndIncrement(), answer.text()));
 
-            var indexAnswer = ioService.readIntForRange(0, question.answers().size() - 1,
-                    "Некорректно указан номер ответа");
+            var indexAnswer = localizedIOService.readIntForRangeLocalized(0, question.answers().size() - 1,
+                    "TestService.answer.number.incorrect.input");
 
             isAnswerValid = question.answers().get(indexAnswer).isCorrect();
             testResult.applyAnswer(question, isAnswerValid);
