@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ApplicationContext;
-import ru.otus.hw.service.TestRunnerService;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -13,8 +12,8 @@ public class Application {
 
         //Создать контекст Spring Boot приложения
         ApplicationContext context = SpringApplication.run(Application.class);
-        var testRunnerService = context.getBean(TestRunnerService.class);
-        testRunnerService.run();
+//        var testRunnerService = context.getBean(TestRunnerService.class);
+//        testRunnerService.run();
 
     }
 }
