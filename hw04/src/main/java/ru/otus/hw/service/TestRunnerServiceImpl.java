@@ -2,10 +2,12 @@ package ru.otus.hw.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "app.run.useCommandLineRunner", havingValue = "true")
 public class TestRunnerServiceImpl implements CommandLineRunner {
 
     private final TestService testService;
