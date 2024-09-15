@@ -25,7 +25,10 @@ import static org.mockito.ArgumentMatchers.*;
 @SpringBootTest
 @TestPropertySource( properties = {
         "test.locale=en-US",
-        "test.rightAnswersCountToPass=1"
+        "test.rightAnswersCountToPass=1",
+        "app.run.useCommandLineRunner=true",
+        "spring.shell.interactive.enabled=false"
+
 })
 class TestServiceTest {
 
