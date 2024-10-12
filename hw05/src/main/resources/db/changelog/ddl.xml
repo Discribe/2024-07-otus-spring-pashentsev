@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="ddl_1" author="pashentsev">
+        <sql>
+            create table genres (
+                                    id bigserial,
+                                    name varchar(255),
+                                    primary key (id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="ddl_2" author="pashentsev">
+        <sql>
+                create table authors (
+                                      id bigserial,
+                                      full_name varchar(255),
+                                      primary key (id)
+             );
+        </sql>
+    </changeSet>
+
+    <changeSet id="ddl_3" author="pashentsev">
+        <sql>CREATE TABLE IF NOT EXISTS books (
+                                    id bigserial,
+                                    title varchar(255),
+                                    author_id bigint references authors (id) on delete cascade,
+                                    genre_id bigint references genres(id) on delete cascade,
+                                    primary key (id)
+             );</sql>
+    </changeSet>
+
+</databaseChangeLog>

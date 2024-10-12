@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="dml_1" author="pashentsev">
+        <sql>
+            insert into authors(full_name)
+            values ('Author_1'), ('Author_2'), ('Author_3');
+        </sql>
+    </changeSet>
+    <changeSet id="dml_2" author="pashentsev">
+        <sql>
+            insert into genres(name)
+            values ('Genre_1'), ('Genre_2'), ('Genre_3');
+        </sql>
+    </changeSet>
+
+    <changeSet id="dml_3" author="pashentsev">
+        <sql>
+            insert into books(title, author_id, genre_id)
+             values ('BookTitle_1', 1, 1), ('BookTitle_2', 2, 2), ('BookTitle_3', 3, 3);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
