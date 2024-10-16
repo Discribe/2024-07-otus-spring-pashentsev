@@ -3,8 +3,10 @@ package ru.otus.hw.repositories;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.otus.hw.models.Author;
 
@@ -17,20 +19,22 @@ import java.util.Optional;
 @Repository
 public class JdbcAuthorRepository implements AuthorRepository {
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
-    private final JdbcOperations jdbc;
+
     public JdbcAuthorRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
-        jdbc = namedParameterJdbcOperations.getJdbcOperations();
+
     }
 
     @Override
     public List<Author> findAll() {
-        return jdbc.query("select id, full_name from authors", new AuthorRowMapper());;
+        return namedParameterJdbcOperations.query("select id, full_name from authors", new AuthorRowMapper());
     }
 
     @Override
     public Optional<Author> findById(long id) {
-        return Optional.empty();
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource().addValue("id",id);
+      return namedParameterJdbcOperations.query("select id, full_name from authors where id=:id", sqlParameterSource,
+                new AuthorRowMapper()).stream().findFirst();
     }
 
     private static class AuthorRowMapper implements RowMapper<Author> {
