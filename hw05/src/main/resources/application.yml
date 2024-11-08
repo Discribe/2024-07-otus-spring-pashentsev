@@ -4,12 +4,7 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: admin
-  sql:
-    init:
-      mode: never
-      platform: h2
-      data-locations: classpath:data.sql
-      schema-locations: classpath:schema.sql
+
   h2:
     console:
       enabled: true

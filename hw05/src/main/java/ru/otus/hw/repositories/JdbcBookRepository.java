@@ -21,16 +21,16 @@ import java.util.Optional;
 @Repository
 public class JdbcBookRepository implements BookRepository {
 
-    private NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private NamedParameterJdbcOperations jdbc;
 
-    public JdbcBookRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.namedParameterJdbcOperations = namedParameterJdbcOperations;
+    public JdbcBookRepository(NamedParameterJdbcOperations jdbc) {
+        this.jdbc = jdbc;
     }
 
     @Override
     public Optional<Book> findById(long id) {
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-        return namedParameterJdbcOperations.query("select " +
+        return jdbc.query("select " +
                         "bk.author_id as \"author_id\", " +
                         "bk.genre_id as \"genre_id\", " +
                         "bk.id as \"id\", " +
@@ -46,7 +46,7 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public List<Book> findAll() {
 
-        return namedParameterJdbcOperations.query("select " +
+        return jdbc.query("select " +
                         "bk.author_id as \"author_id\", " +
                         "bk.genre_id as \"genre_id\", " +
                         "bk.id as \"id\", " +
@@ -70,7 +70,7 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public void deleteById(long id) {
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-        namedParameterJdbcOperations.update("delete from books where id =:id", param);
+        jdbc.update("delete from books where id =:id", param);
 
     }
 
@@ -82,7 +82,7 @@ public class JdbcBookRepository implements BookRepository {
                 .addValue("author_id", book.getAuthor().getId())
                 .addValue("genre_id", book.getGenre().getId());
 
-        namedParameterJdbcOperations.update("insert into books (title, author_id, genre_id)" +
+        jdbc.update("insert into books (title, author_id, genre_id)" +
                 " values (:title, :author_id, :genre_id)", param, keyHolder);
         //noinspection DataFlowIssue
         book.setId(keyHolder.getKeyAs(Long.class));
@@ -91,17 +91,19 @@ public class JdbcBookRepository implements BookRepository {
 
     private Book update(Book book) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        findById(book.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(book.getId())));
-
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", book.getId())
                 .addValue("title", book.getTitle())
                 .addValue("author_id", book.getAuthor().getId())
                 .addValue("genre_id", book.getGenre().getId());
 
-        namedParameterJdbcOperations.update("update books set title = :title, author_id = :author_id, " +
+       int countUpdateRow =  jdbc.update("update books set title = :title, author_id = :author_id, " +
                 "genre_id = :genre_id where id = :id", param, keyHolder);
+
+       if (countUpdateRow != 1) {
+            throw new EntityNotFoundException("Book with id %d not found".formatted(book.getId()));
+        }
+
         return book;
     }
 
@@ -116,10 +118,7 @@ public class JdbcBookRepository implements BookRepository {
             String genre = rs.getString("genre");
             Long genreId = rs.getLong("genre_id");
 
-            return new Book(id, title,
-                    (Objects.nonNull(authorId) && Objects.nonNull(author)) ? new Author(authorId, author) : null,
-                    (Objects.nonNull(genreId) && Objects.nonNull(genre)) ? new Genre(genreId, genre) : null);
-
+            return new Book(id, title, new Author(authorId, author), new Genre(genreId, genre));
         }
     }
 }

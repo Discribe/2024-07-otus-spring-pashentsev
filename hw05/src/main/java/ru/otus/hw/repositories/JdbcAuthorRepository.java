@@ -14,22 +14,22 @@ import java.util.Optional;
 
 @Repository
 public class JdbcAuthorRepository implements AuthorRepository {
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final NamedParameterJdbcOperations jdbc;
 
-    public JdbcAuthorRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.namedParameterJdbcOperations = namedParameterJdbcOperations;
+    public JdbcAuthorRepository(NamedParameterJdbcOperations jdbc) {
+        this.jdbc = jdbc;
 
     }
 
     @Override
     public List<Author> findAll() {
-        return namedParameterJdbcOperations.query("select id, full_name from authors", new AuthorRowMapper());
+        return jdbc.query("select id, full_name from authors", new AuthorRowMapper());
     }
 
     @Override
     public Optional<Author> findById(long id) {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource().addValue("id", id);
-        return namedParameterJdbcOperations.query("select id, full_name from authors where id=:id", sqlParameterSource,
+        return jdbc.query("select id, full_name from authors where id=:id", sqlParameterSource,
                 new AuthorRowMapper()).stream().findFirst();
     }
 

@@ -14,21 +14,21 @@ import java.util.Optional;
 
 @Repository
 public class JdbcGenreRepository implements GenreRepository {
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final NamedParameterJdbcOperations jdbc;
 
-    public JdbcGenreRepository(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.namedParameterJdbcOperations = namedParameterJdbcOperations;
+    public JdbcGenreRepository(NamedParameterJdbcOperations jdbc) {
+        this.jdbc = jdbc;
     }
 
     @Override
     public List<Genre> findAll() {
-        return namedParameterJdbcOperations.query("select id, name from genres", new GenreRowMapper());
+        return jdbc.query("select id, name from genres", new GenreRowMapper());
     }
 
     @Override
     public Optional<Genre> findById(long id) {
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-        return namedParameterJdbcOperations.query("select id, name from genres where id=:id",
+        return jdbc.query("select id, name from genres where id=:id",
                 param, new GenreRowMapper()).stream().findFirst();
     }
 
