@@ -20,6 +20,7 @@ import ru.otus.hw.models.Genre;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -33,7 +34,7 @@ class JdbcGenreRepositoryTest {
     private List<Genre> dbGenres;
 
     private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 4).boxed().map(id -> new Genre(id, "Genre_" + id)).toList();
+        return LongStream.range(1, 4).boxed().map(id -> new Genre(id, "Genre_" + id)).toList();
     }
 
     @BeforeEach

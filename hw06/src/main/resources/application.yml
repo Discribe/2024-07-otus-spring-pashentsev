@@ -3,16 +3,19 @@ spring:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
-    password: admins
+    password: admin
+  jpa:
+    generate-ddl: true
     show-sql: true
   h2:
     console:
       enabled: true
       path: /h2-console
 
+
   liquibase:
     change-log: db/changelog/master.xml
-
+    enabled: false
   shell:
     interactive:
-      enabled: true
+      enabled: false
